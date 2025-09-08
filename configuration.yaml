@@ -1,0 +1,60 @@
+# Loads the default set of Home Assistant integrations.
+default_config:
+
+# Loads custom themes stored in the /themes directory.
+frontend:
+  themes: !include_dir_merge_named themes
+
+# Keeps automations, scripts, and scenes in their own YAML files for organization.
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+# Enables support for live video streaming.
+stream:
+
+# Defines custom binary sensors (on/off type).
+binary_sensor:
+  - platform: template
+    sensors:
+      washing_machine_running:
+        friendly_name: "Washing Machine Running"
+        device_class: running
+        # Checks if the washing machine’s power draw is above 5W → considered "running".
+        value_template: >
+          {{ states('sensor.appliance_power') | float > 5 }}
+
+      person_home_wifi:
+        friendly_name: "Person Home (WiFi)"
+        device_class: presence
+        # Tracks if a phone is currently connected to WiFi.
+        value_template: >
+          {{ is_state('sensor.phone_connection_type', 'wifi') }}
+
+# Defines custom sensors that return string values.
+sensor:
+  - platform: template
+    sensors:
+      dryer_status:
+        friendly_name: "Dryer Status"
+        # If vibration sensor is on → "Running", otherwise → "Idle".
+        value_template: >
+          {% if is_state('binary_sensor.dryer_vibration', 'on') %}
+            Running
+          {% else %}
+            Idle
+          {% endif %}
+
+# Defines a device tracker that marks a person as "home" or "not_home".
+device_tracker:
+  - platform: template
+    devices:
+      person_wifi_tracker:
+        friendly_name: "Person WiFi Tracker"
+        # Uses the WiFi presence binary sensor to determine location.
+        value_template: >
+          {% if is_state('binary_sensor.person_home_wifi', 'on') %}
+            home
+          {% else %}
+            not_home
+          {% endif %}
