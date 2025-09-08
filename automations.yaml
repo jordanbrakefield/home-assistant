@@ -247,3 +247,19 @@
         entity_id: light.master_closet_light
       # Time to wait before turning light off after no motion (seconds)
       no_motion_wait: 120
+
+# 💧 Backyard Sprinkler Automation
+# Automatically turns off the backyard sprinkler after 20 minutes to prevent overwatering
+- id: 'backyard_sprinkler_timeout'
+  alias: Limit Backyard Sprinkler to 20 Minutes
+  description: Turns off backyard sprinkler if it has been on for more than 20 minutes
+  triggers:
+    - platform: state
+      entity_id: switch.backyard_sprinkler
+      to: 'on'
+      for: '00:20:00'
+  actions:
+    - service: switch.turn_off
+      target:
+        entity_id: switch.backyard_sprinkler
+  mode: restart
