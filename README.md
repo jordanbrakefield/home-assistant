@@ -1,8 +1,12 @@
-![Dashboard] (assets/IMG_4606.jpg)
-
 Home Automation – Home Assistant
 
-This repository showcases a variety of Home Assistant automations I’ve created to automate daily tasks around my home. All automations are safe for sharing — device IDs have been replaced with descriptive names and sensitive information removed. This project demonstrates practical applications of sensors, lights, notifications, and smart home logic.
+This repository showcases a variety of Home Assistant automations I’ve created to automate daily tasks around my home, as well as a UI to easily view and change the state of lights and appliances from anywhere. All automations are safe for sharing — device IDs have been replaced with descriptive names and sensitive information removed. This project demonstrates practical applications of sensors, lights, notifications, and smart home logic.
+<div>
+<img src="assets/IMG_4606.jpg" alt="Dashboard image" width="200">
+  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+<img src="assets/IMG_4607.jpg" alt="Example room view" width="200">
+</div>
+
 
 1. Door & Motion-Based Lighting
 
