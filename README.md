@@ -1,3 +1,5 @@
+![Dashboard] (assets/IMG_4606.jpg)
+
 Home Automation – Home Assistant
 
 This repository showcases a variety of Home Assistant automations I’ve created to automate daily tasks around my home. All automations are safe for sharing — device IDs have been replaced with descriptive names and sensitive information removed. This project demonstrates practical applications of sensors, lights, notifications, and smart home logic.
