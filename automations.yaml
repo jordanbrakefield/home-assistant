@@ -1,0 +1,249 @@
+# My automations. 
+# (scrubbed to remove personal info)
+
+# 🧺 Washing Machine
+# Sends notification when washing machine finishes (power usage drops).
+- id: 'automation_2'
+  alias: Washing Machine Complete
+  description: Notify both phones when washing machine finishes based on power usage
+  triggers:
+    - platform: state
+      entity_id: binary_sensor.washing_machine_running
+      from: 'on'
+      to: 'off'
+      for: '00:02:00'
+  actions:
+    - service: notify.mobile_app_phone_1
+      data:
+        title: "🧺 Washing Complete"
+        message: The washing machine has finished its cycle.
+    - service: notify.mobile_app_phone_2
+      data:
+        title: "🧺 Washing Complete"
+        message: The washing machine has finished its cycle.
+  mode: single
+
+
+
+  # 🍽️ Dishwasher
+# Sends notification when dishwasher finishes (power usage drops).
+- id: 'automation_4'
+  alias: Dishwasher Complete
+  description: Notify both phones when dishwasher finishes based on power usage
+  triggers:
+    - platform: numeric_state
+      entity_id: sensor.dishwasher_power
+      below: 5
+      for: '00:05:00'
+  actions:
+    - service: notify.mobile_app_phone_1
+      data:
+        title: "🍽️ Dishwasher Complete"
+        message: The dishwasher has finished its cycle.
+    - service: notify.mobile_app_phone_2
+      data:
+        title: "🍽️ Dishwasher Complete"
+        message: The dishwasher has finished its cycle.
+  mode: single
+
+# 🥫 Pantry Light Automation
+# Turns pantry light on/off based on door open/close and motion sensor.
+# Light turns on when door opens or motion is detected while door is open.
+# Light turns off when door closes or no motion detected for 2 minutes.
+- id: 'automation_pantry_light'
+  alias: Pantry Light Automation
+  description: Turns pantry light on/off based on door and motion
+  triggers:
+    # Trigger when pantry door opens
+    - platform: state
+      entity_id: binary_sensor.pantry_door_contact
+      to: 'on'
+    # Trigger when pantry door closes
+    - platform: state
+      entity_id: binary_sensor.pantry_door_contact
+      to: 'off'
+    # Trigger when motion stops for 2 minutes
+    - platform: state
+      entity_id: binary_sensor.pantry_motion
+      to: 'off'
+      for: '00:02:00'
+    # Trigger when motion is detected
+    - platform: state
+      entity_id: binary_sensor.pantry_motion
+      to: 'on'
+  conditions: []
+  actions:
+    - choose:
+        # Case 1: Door is open and light is off → turn light on
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.pantry_door_contact
+              state: 'on'
+            - condition: state
+              entity_id: light.pantry_light
+              state: 'off'
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: light.pantry_light
+        # Case 2: Door is closed OR no motion while door is open → turn light off
+        - conditions:
+            - condition: or
+              conditions:
+                - condition: state
+                  entity_id: binary_sensor.pantry_door_contact
+                  state: 'off'
+                - condition: and
+                  conditions:
+                    - condition: state
+                      entity_id: binary_sensor.pantry_door_contact
+                      state: 'on'
+                    - condition: state
+                      entity_id: binary_sensor.pantry_motion
+                      state: 'off'
+                      for: '00:02:00'
+          sequence:
+            - service: light.turn_off
+              target:
+                entity_id: light.pantry_light
+        # Case 3: Door is open and motion detected, light is off → turn light on
+        - conditions:
+            - condition: state
+              entity_id: binary_sensor.pantry_door_contact
+              state: 'on'
+            - condition: state
+              entity_id: binary_sensor.pantry_motion
+              state: 'on'
+            - condition: state
+              entity_id: light.pantry_light
+              state: 'off'
+          sequence:
+            - service: light.turn_on
+              target:
+                entity_id: light.pantry_light
+  mode: restart
+
+# 💡 Living Room Lamps - Turn on at sunset
+# Gradually dims the lights after sunset and turns them off at 11 PM
+- id: 'living_room_lamps_1'
+  alias: Living Room Lamps - Turn On at Sunset
+  description: Turns living room lamps on at sunset with 75% brightness
+  triggers:
+    - platform: sun
+      event: sunset
+  actions:
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.living_room_lamp_1
+          - light.living_room_lamp_2
+      data:
+        brightness_pct: 75
+  mode: single
+
+# 💡 Dim to 50% brightness 30 min after sunset
+- id: 'living_room_lamps_2'
+  alias: Living Room Lamps - Dim to 50% after Sunset
+  description: Reduces brightness to 50% 30 minutes after sunset
+  triggers:
+    - platform: sun
+      event: sunset
+      offset: '+00:30:00'
+  actions:
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.living_room_lamp_1
+          - light.living_room_lamp_2
+      data:
+        brightness_pct: 50
+  mode: single
+
+# 💡 Dim to 25% brightness 1 hour after sunset
+- id: 'living_room_lamps_3'
+  alias: Living Room Lamps - Dim to 25% after Sunset
+  description: Reduces brightness to 25% 1 hour after sunset
+  triggers:
+    - platform: sun
+      event: sunset
+      offset: '+01:00:00'
+  actions:
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.living_room_lamp_1
+          - light.living_room_lamp_2
+      data:
+        brightness_pct: 25
+  mode: single
+
+# 💡 Dim to 20% brightness 1.5 hours after sunset
+- id: 'living_room_lamps_4'
+  alias: Living Room Lamps - Dim to 20% after Sunset
+  description: Reduces brightness to 20% 1.5 hours after sunset
+  triggers:
+    - platform: sun
+      event: sunset
+      offset: '+01:30:00'
+  actions:
+    - service: light.turn_on
+      target:
+        entity_id:
+          - light.living_room_lamp_1
+          - light.living_room_lamp_2
+      data:
+        brightness_pct: 20
+  mode: single
+
+# 💡 Turn off living room lamps at 11 PM
+- id: 'living_room_lamps_5'
+  alias: Living Room Lamps - Turn Off at 11 PM
+  description: Turns off living room lamps at 11 PM
+  triggers:
+    - platform: time
+      at: '23:00:00'
+  actions:
+    - service: light.turn_off
+      target:
+        entity_id:
+          - light.living_room_lamp_1
+          - light.living_room_lamp_2
+  mode: single
+
+  # 🚗 Garage Light Automations
+# Turns garage light on/off based on door open events and motion detection
+
+# 1️⃣ Garage Door Opened → Turn on light
+- id: 'garage_light_garage_door_opened'
+  alias: Garage Light - Garage Door Opened
+  description: Turns on garage light when the main garage door opens
+  triggers:
+    - platform: state
+      entity_id: binary_sensor.garage_door_contact
+      to: 'on'
+  actions:
+    - service: light.turn_on
+      target:
+        entity_id: light.garage_light
+  mode: restart
+
+# 2️⃣ Man Door Opened → Turn on light
+- id: 'garage_light_man_door_opened'
+  alias: Garage Light - Man Door Opened
+  description:
+
+# 🚪 Master Closet Light Automation
+# Turns on the closet light when motion is detected and turns it off after 2 minutes of no motion
+- id: 'master_closet_motion_light'
+  alias: Master Closet Light - Motion
+  description: Turns on closet light on motion and off after 2 minutes of no motion using Home Assistant blueprint
+  use_blueprint:
+    path: homeassistant/motion_light.yaml
+    input:
+      # Motion sensor in the master closet
+      motion_entity: binary_sensor.master_closet_motion_occupancy
+      # Target light to control
+      light_target:
+        entity_id: light.master_closet_light
+      # Time to wait before turning light off after no motion (seconds)
+      no_motion_wait: 120
