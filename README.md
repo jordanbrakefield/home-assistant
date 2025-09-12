@@ -39,8 +39,6 @@ Home Assistant – main automation platform.
 
 YAML – configuration and automation scripting.
 
-Templates – dynamic automation logic using Jinja2 templates.
-
 Blueprints – reusable automation templates.
 
 Notifications – mobile alerts via Home Assistant Companion App
