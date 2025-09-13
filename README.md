@@ -33,9 +33,9 @@ Sends alerts to mobile devices with friendly messages.
 
 Automatically turns off sprinklers after 20 minutes to prevent overwatering.
 
-Technologies & Concepts
+5. Technologies & Concepts
 
-Home Assistant – main automation platform.
+Home Assistant – main automation platform. Hosted on a raspberry pi.
 
 YAML – configuration and automation scripting.
 
