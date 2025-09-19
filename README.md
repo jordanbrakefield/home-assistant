@@ -37,6 +37,8 @@ Automatically turns off sprinklers after 20 minutes to prevent overwatering.
 
 Home Assistant – main automation platform. Hosted on a raspberry pi.
 
+Twingate - Used as a secure tunnel to connect to Home Assistant when away from home. Providing "zero trust" access.
+
 YAML – configuration and automation scripting.
 
 Blueprints – reusable automation templates.
